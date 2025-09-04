@@ -1,14 +1,4 @@
 /*
-isAllOdd() - számokat tartalmazó tömb minden eleme páratlan-e. Visszatérési érték true vagy false
-hasEven() - számokat tartalmazó tömb tartalmaz-e páros elemet. Visszatérési érték true vagy false
-sigma() - számokat tartalmazó tömb elemeit összeszorozza és a szorzatot adja vissza
-
-Tipp:
-localeCompare
-Math.abs
-
-----------------------------------------
-
 Kérdés:
 Miért nem működik helyesen az alábbi kód:
 
