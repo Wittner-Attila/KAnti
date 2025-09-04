@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TicTacToe</title>
+    <style>
+        #ai,#player {
+            display: none;
+        }
+
+        #gameSelector{
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 50px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            background-color: #ffffff;
+        }
+
+        #difficultySelect{
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            padding: 50px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            width: 150px;
+            background-color: #ffffff;
+        }
+
+        .choose{
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .gameMode {
+            padding: 20px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            background-color: #ffffff;
+            width: 300px;
+            margin: 20px;
+            transition: 100ms;
+        }
+
+        .gameMode:hover {
+            transform: scale(120%);
+            cursor: pointer;
+            background-color: #bebebe;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f8f9fa;
+        }
+
+        .main {
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            background-color: #ffffff;
+        }
+
+        .board {
+            display: grid;
+            grid-template-columns: repeat(3, 100px);
+            grid-gap: 5px;
+            margin-top: 20px;
+        }
+
+        .cell {
+            width: 100px;
+            height: 100px;
+            border: 1px solid gray;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            cursor: pointer;
+        }
+
+        .cell.taken {
+            pointer-events: none;
+        }
+
+        .message {
+            margin-top: 20px;
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .reset {
+            margin-top: 20px;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            background-color: whitesmoke;
+            border: 1px solid dodgerblue;
+            color: dodgerblue;
+            border-radius: 8px;
+        }
+    </style>
+</head>
+<body>
+    <h1>TicTacToe</h1>
+    <div id="gameSelector">
+        <h2>Choose a game mode</h2>
+        <div class="choose">
+            <div class="player gameMode" onclick="vsPlayer()">
+                <h2>Versus Player</h2>
+            </div>
+            <div class="ai gameMode" onclick="vsAI()">
+                <h2>Versus AI</h2>
+            </div>
+        </div>
+        <div id="difficultySelect">
+            <h2>AI Difficulty</h2>
+            <label for="AIDifficulty">Easy</label>
+            <input type="radio" checked name="AIDifficulty" id="AIEasy">
+            <label for="AIDifficulty">Normal</label>
+            <input type="radio" name="AIDifficulty" id="AINormal">
+            <label for="AIDifficulty">Hard</label>
+            <input type="radio" name="AIDifficulty" id="AIHard">
+        </div>
+    </div>
+    <br>
+    <div id="player" class="main">
+        <h2>
+            Versus Player
+        </h2>
+        <p id="messagePlayer" class="message"></p>
+        <div id="boardPlayer" class="board"></div>
+    </div>
+    <div id="ai" class="main">
+        <h2>
+            Versus AI
+        </h2>
+        <p id="messageAi" class="message"></p>
+        <div id="boardAi" class="board"></div>
+    </div>
+    <script>
+const TicTacToeVsPlayer = {
+    cPlayer: "X", // Tracks current player (X or O)
+    state: Array(9).fill(null), // Board state (null for empty cells)
+    gameOver: false, // Indicates if the game is over
+
+    // Initialize the game
+    init() {
+        this.cBoard();
+    },
+
+    // Create the game board dynamically
+    cBoard() {
+        const board = document.getElementById("boardPlayer");
+        board.innerHTML = ""; // Clear previous board
+        this.state.forEach((_, i) => {
+            const cell = document.createElement("div");
+            cell.classList.add("cell");
+            cell.dataset.index = i;
+            board.appendChild(cell);
+        });
+        board.addEventListener("click", (e) => this.handleClick(e)); // Handle clicks on the board
+        this.uMessage(`Player ${this.cPlayer}'s turn`);
+    },
+
+    // Handle a cell click
+    handleClick(e) {
+        const cell = e.target;
+        const i = cell.dataset.index;
+
+        // Ignore clicks if game is over or cell is taken
+        if (this.gameOver || !cell.classList.contains("cell") || this.state[i])
+            return;
+
+        // Update board state and UI
+        this.state[i] = this.cPlayer;
+        cell.textContent = this.cPlayer;
+        cell.classList.add("taken");
+
+        // Check for winner or tie
+        const winCombo = this.checkWin();
+        if (winCombo) {
+            this.highlight(winCombo);
+            this.uMessage(`Player ${this.cPlayer} wins!`);
+            this.gameOver = true;            
+            setTimeout( ()=> {this.uMessage("Resetting...")}, 1000)
+            setTimeout( ()=> {this.reset()}, 2000)
+        } else if (this.state.every((cell) => cell)) {
+            this.uMessage("It's a tie!");
+            this.gameOver = true;
+            setTimeout( ()=> {this.uMessage("Resetting...")}, 1000)
+            setTimeout( ()=> {this.reset()}, 2000)
+        } else {
+            // Switch players
+            this.cPlayer = this.cPlayer === "X" ? "O" : "X";
+            this.uMessage(`Player ${this.cPlayer}'s turn`);
+        }
+    },
+
+    // Check if there's a winning combination
+    checkWin() {
+        const wins = [
+            [0, 1, 2], // Row
+            [3, 4, 5], // Row
+            [6, 7, 8], // Row
+            [0, 3, 6], // Column
+            [1, 4, 7], // Column
+            [2, 5, 8], // Column
+            [0, 4, 8], // Diagonal
+            [2, 4, 6], // Diagonal
+        ];
+        return wins.find((combo) =>
+            combo.every((i) => this.state[i] === this.cPlayer)
+        );
+    },
+
+    // Highlight winning cells
+    highlight(combo) {
+        combo.forEach((i) => {
+            document.getElementById("boardPlayer").children[i].style.color = "red";
+        });
+    },
+
+    // Reset the game
+    reset() {
+        this.state = Array(9).fill(null);
+        this.cPlayer = "X";
+        this.gameOver = false;
+        this.cBoard();
+    },
+
+    // Update the game status message
+    uMessage(msg) {
+        document.getElementById("messagePlayer").textContent = msg;
+    },
+};
+
+const TicTacToeVsAi = {
+    cPlayer: "X", // Tracks current player (X or O)
+    aiInProgress: false, // New guard variable
+    state: Array(9).fill(null), // Board state (null for empty cells)
+    gameOver: false, // Indicates if the game is over
+    easy: true,
+    normal: false,
+    hard: false,
+
+
+    // Initialize the game
+    init() {
+        this.cBoard();
+        this.easy = document.getElementById("AIEasy").checked
+        this.normal = document.getElementById("AINormal").checked
+        this.hard = document.getElementById("AIHard").checked
+        if (this.hard){
+            console.log("hard");
+            this.state[4] = "O"; // Update logical board state for the middle spot
+            const middleCell = document.querySelector(`.cell[data-index='4']`);
+            middleCell.textContent = "O";
+            middleCell.classList.add("taken");
+            this.cPlayer = "X";
+            this.uMessage(`Player's turn`);
+            }
+    },
+
+    // Create the game board dynamically
+    cBoard() {
+        const board = document.getElementById("boardAi");
+        board.innerHTML = ""; // Clear previous board
+        this.state.forEach((_, i) => {
+            const cell = document.createElement("div");
+            cell.classList.add("cell");
+            cell.dataset.index = i;
+            board.appendChild(cell);
+        });
+        board.addEventListener("click", (e) => this.handleClick(e)); // Handle clicks on the board
+        if (this.cPlayer == "X"){
+            this.uMessage(`Player's turn`);
+        }
+        else {
+            this.uMessage(`Computer's turn`)
+        }
+    },
+
+    // Handle a cell click
+    handleClick(e) {
+        if (this.aiInProgress) return; // Ignore clicks during AI's turn
+        
+        const cell = e.target;
+        const i = cell.dataset.index;
+
+        // Ignore clicks if game is over or cell is taken
+        if (this.gameOver || !cell.classList.contains("cell") || this.state[i]){
+            return;
+        }
+
+        // Update board state and UI
+        this.state[i] = this.cPlayer;
+        cell.textContent = this.cPlayer;
+        cell.classList.add("taken");
+
+        // Check for winner or tie
+        const winCombo = this.checkWin();
+        if (winCombo) {
+            this.highlight(winCombo);
+            if (this.cPlayer == "X"){
+                this.uMessage(`Player wins`);
+            }
+            else {
+                this.uMessage(`Computer wins`);
+            }
+            this.gameOver = true;
+            setTimeout(() => { this.uMessage("Resetting...") }, 1000);
+            setTimeout(() => { this.reset() }, 2000);
+        } else if (this.state.every((cell) => cell)) {
+            this.uMessage("It's a tie!");
+            this.gameOver = true;
+            setTimeout(() => { this.uMessage("Resetting...") }, 1000);
+            setTimeout(() => { this.reset() }, 2000);
+        } else {
+            // Switch players
+            this.cPlayer = this.cPlayer === "X" ? "O" : "X";
+            if (this.cPlayer == "X") {
+                this.uMessage(`Player's turn`);
+            } else {
+                this.uMessage(`Computer's turn`);
+                if (this.cPlayer === "O") {
+                    setTimeout(() => this.playAiTurn(), 500); // Add a slight delay for the AI
+                }
+            }
+        }
+    },
+
+    // AI selects a random available tile
+    playAiTurn() {
+        if (this.easy){
+            const availableIndices = this.state
+            .map((value, index) => (value === null ? index : null))
+            .filter((index) => index !== null);
+            
+            if (availableIndices.length === 0) return; // No available moves
+            
+            const randomIndex = availableIndices[Math.floor(Math.random() * availableIndices.length)];
+            
+            const cell = document.querySelector(`.cell[data-index='${randomIndex}']`);
+            cell.click(); // Simulate a click on the chosen cell
+        }
+
+        else if (this.normal) {
+        // Check for a winning move
+        const winMove = this.findWinningMove("O");
+        if (winMove !== null) {
+            const cell = document.querySelector(`.cell[data-index='${winMove}']`);
+            cell.click();
+        }
+
+        // Check for a blocking move
+        const blockMove = this.findWinningMove("X");
+        if (blockMove !== null) {
+            const cell = document.querySelector(`.cell[data-index='${blockMove}']`);
+            cell.click();
+        }
+
+        // Otherwise, choose a random move
+        const availableIndices = this.state
+            .map((value, index) => (value === null ? index : null))
+            .filter((index) => index !== null);
+        
+        if (availableIndices.length === 0) return; // No available moves
+        
+        const randomIndex = availableIndices[Math.floor(Math.random() * availableIndices.length)];
+        const cell = document.querySelector(`.cell[data-index='${randomIndex}']`);
+        cell.click(); // Simulate a click on the chosen cell
+    } else if (this.hard) {
+    const sideIndices = [1, 3, 5, 7];
+    const cornerIndices = [0, 2, 6, 8];
+    const playerMove = this.state.findIndex((val) => val === "X");
+
+    // Step 1: Check if the AI can win or needs to block
+    const winMove = this.findWinningMove("O");
+    if (winMove !== null) {
+        const cell = document.querySelector(`.cell[data-index='${winMove}']`);
+        cell.click();
+        this.aiInProgress = false;
+        return;
+    }
+
+    // Step 2: Block the player's winning move (block "X")
+    const blockMove = this.findWinningMove("X");
+    if (blockMove !== null) {
+        const cell = document.querySelector(`.cell[data-index='${blockMove}']`);
+        cell.click();
+        this.aiInProgress = false;
+        return;
+    }
+
+    // Step 3: Check if the player has blocked a diagonal move and block accordingly
+    if (cornerIndices.includes(playerMove)) {
+        // Define which corners are adjacent to each corner on the board
+        const adjacentCorners = {
+            0: [2, 6],
+            2: [0, 8],
+            6: [0, 8],
+            8: [2, 6],
+        };
+
+        // Filter for blocked adjacent corners (ones that are filled by player "X")
+        const blockedCorners = adjacentCorners[playerMove].filter(corner => this.state[corner] !== null);
+
+        // If two adjacent corners are blocked, prioritize blocking the diagonal
+        if (blockedCorners.length === 2) {
+            // Find the remaining corner in the diagonal (the one that can block the player's diagonal)
+            const diagonalIndex = [0, 2, 6, 8].find(corner => this.state[corner] === null);
+            if (diagonalIndex !== undefined) {
+                const cell = document.querySelector(`.cell[data-index='${diagonalIndex}']`);
+                cell.click();
+                this.aiInProgress = false;
+                return;
+            }
+        }
+
+        // Otherwise, if the player blocked one diagonal, pick the adjacent empty corner
+        const move = adjacentCorners[playerMove].find((index) => this.state[index] === null);
+        if (move !== undefined) {
+            const cell = document.querySelector(`.cell[data-index='${move}']`);
+            cell.click();
+            this.aiInProgress = false;
+            return;
+        }
+    }
+
+    // Step 4: If no winning or blocking move is found, pick a random move
+    const availableIndices = this.state
+        .map((value, index) => (value === null ? index : null))
+        .filter((index) => index !== null);
+        
+    if (availableIndices.length === 0) return; // No available moves
+
+    const randomIndex = availableIndices[Math.floor(Math.random() * availableIndices.length)];
+    const cell = document.querySelector(`.cell[data-index='${randomIndex}']`);
+    cell.click(); // Simulate a click on the chosen cell
+}
+
+this.aiInProgress = false; // Reset guard after AI finishes
+},
+
+    findWinningMove(player) {
+        const wins = [
+            [0, 1, 2], // Row
+            [3, 4, 5], // Row
+            [6, 7, 8], // Row
+            [0, 3, 6], // Column
+            [1, 4, 7], // Column
+            [2, 5, 8], // Column
+            [0, 4, 8], // Diagonal
+            [2, 4, 6], // Diagonal
+        ];
+
+        for (const combo of wins) {
+            const [a, b, c] = combo;
+            const values = [this.state[a], this.state[b], this.state[c]];
+
+            // Check if the player can win by placing at one of the positions
+            if (values.filter((v) => v === player).length === 2 && values.includes(null)) {
+                return combo[values.indexOf(null)];
+            }
+        }
+        return null; // No winning move found
+    },
+
+    // Check if there's a winning combination
+    checkWin() {
+        const wins = [
+            [0, 1, 2], // Row
+            [3, 4, 5], // Row
+            [6, 7, 8], // Row
+            [0, 3, 6], // Column
+            [1, 4, 7], // Column
+            [2, 5, 8], // Column
+            [0, 4, 8], // Diagonal
+            [2, 4, 6], // Diagonal
+        ];
+        return wins.find((combo) =>
+            combo.every((i) => this.state[i] === this.cPlayer)
+        );
+    },
+
+    // Highlight winning cells
+    highlight(combo) {
+        combo.forEach((i) => {
+            document.getElementById("boardAi").children[i].style.color = "red";
+        });
+    },
+
+    // Reset the game
+    reset() {
+        this.state = Array(9).fill(null);
+        this.cPlayer = "X";
+        this.gameOver = false;
+        this.cBoard();
+        if (this.hard){
+            console.log("hard");
+            this.state[4] = "O"; // Update logical board state for the middle spot
+            const middleCell = document.querySelector(`.cell[data-index='4']`);
+            middleCell.textContent = "O";
+            middleCell.classList.add("taken");
+            this.cPlayer = "X";
+            this.uMessage(`Player's turn`);
+            }
+    },
+
+    // Update the game status message
+    uMessage(msg) {
+        document.getElementById("messageAi").textContent = msg;
+    },
+};
+
+// Start the game
+
+function vsPlayer() {
+    document.getElementById("player").style.display = "block"
+    document.getElementById("gameSelector").style.display = "none"
+    TicTacToeVsPlayer.init();
+}
+function vsAI() {
+    document.getElementById("ai").style.display = "block"
+    document.getElementById("gameSelector").style.display = "none"
+    TicTacToeVsAi.init();
+}
+    </script> 
+</body>
+</html>

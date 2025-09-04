@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>User Search</title>
+</head>
+<body>
+    <div class="container">
+        <h1 class="neon-text">Search by Username</h1>
+        <div class="input-group futuristic-input">
+            <input type="text" id="username" placeholder="Enter Username..." />
+            <button class="futuristic-btn" onclick="searchUser()">Search</button>
+        </div>
+
+        <button class="toggle-btn futuristic-btn" onclick="toggleMode()">Dark/Light</button>
+
+        <div id="user-card" class="card futuristic-card" style="display:none;">
+            <p><h3>Username:</h3><span id="username-display"></span></p><br>
+            <p><h3>Name:</h3> <span id="name"></span></p><br>
+            <p><h3>Clan:</h3><span id="clan"></span></p><br>
+            <p><h3>Languages:</h3></p>
+            <ul id="languages"></ul>
+        </div>
+
+        <button class="clear-btn futuristic-btn" onclick="clearData()">Clear User</button>
+    </div>
+</body>
+<script src="script.js"></script>
+</html>

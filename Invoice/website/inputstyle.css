@@ -1,0 +1,133 @@
+@import url('https://fonts.googleapis.com/css2?family=Racing+Sans+One&display=swap');
+
+* {
+    font-family: 'Racing Sans One', sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+:root {
+    --bg: #fff;
+    --text: #000;
+    --panel: #ddd;
+    --panel2: #888;
+    --panel3: #333;
+    --border: #000;
+}
+
+@media (prefers-color-scheme: dark) {
+    :root {
+        --bg: #000;
+        --text: #fff;
+        --panel: #333;
+        --panel2: #777;
+        --panel3: #999;
+        --border: #fff;
+    }
+}
+
+/* General styles */
+body {
+    font-family: 'Segoe UI', Arial, sans-serif;
+    background: var(--bg);
+    margin: 0;
+    padding: 0;
+    color: var(--text);
+}
+
+/* Container */
+.container {
+    max-width: 500px;
+    margin: 40px auto;
+    background: var(--panel);
+    border-radius: 10px;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+    padding: 64px 48px;
+    border: 1px solid var(--border);
+    align-items: center;
+}
+
+/* Headings */
+h1, h2 {
+    margin-top: 0;
+    color: var(--panel3);
+    font-weight: 600;
+}
+
+/* Form styles */
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+label {
+    font-size: 1rem;
+    margin-bottom: 6px;
+    color: var(--panel2);
+}
+
+input[type="text"],
+input[type="number"],
+input[type="date"],
+textarea,
+select {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    font-size: 1rem;
+    background: var(--panel2);
+    color: var(--text);
+    transition: border 0.2s, background 0.2s;
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+    border-color: var(--panel3);
+    outline: none;
+    background: var(--bg);
+    color: var(--text);
+}
+
+button,
+input[type="submit"] {
+    background: var(--panel3);
+    color: var(--bg);
+    border: none;
+    border-radius: 6px;
+    padding: 12px 0;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+button:hover,
+input[type="submit"]:hover {
+    background: var(--panel2);
+    color: var(--text);
+}
+
+@media (max-width: 600px) {
+    .container {
+        padding: 18px 8px;
+    }
+}
+
+.back-button {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+    color: var(--text);
+    font-size: 1.2rem;
+    font-weight: bold;
+    text-decoration: none;
+    background: var(--panel2);
+    padding: 10px 20px;
+    border-radius: 6px;
+    border: 1px solid var(--border);
+    transition: background 0.2s, color 0.2s;
+
+}

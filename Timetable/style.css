@@ -1,0 +1,23 @@
+table{
+    border: 3px double black;
+    border-collapse: collapse;
+    display: table;
+}
+th, td, tr {
+    padding: 15px;
+    height: 120px;
+    width: 124.5px;
+    border-top: 2px solid black;
+    border-bottom: 2px solid black;
+    text-align: center;
+}
+tr>th:first-child{
+    border-right: 2px solid black;
+}
+th {
+    font-variant-caps: small-caps;
+    font-size: 20px;
+}
+#oneDay{
+    display: none;
+}

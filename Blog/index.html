@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styles.css">
+    <script src="script.js"></script>
+    <title>Blogger</title>
+</head>
+
+<body>
+    <header class="blog-header">
+        <div class="header-spacer"></div>
+        <h1 class="blog-title blogger-text" id="blogger-title" onclick="showHeaderSearch()">
+            Blogger
+            <span class="blog-title-caption">click to search</span>
+        </h1>
+        <div id="header-search-container" style="display:none; position:relative;">
+            <h1 class="blog-title blogger-text" id="header-search-bg">
+            Blogger
+            <span class="blog-title-caption">click to search</span>
+            </h1>
+            <input id="header-search" type="text" placeholder="Search..." class="search-input" aria-label="Search site"
+            onblur="hideHeaderSearch()" onkeydown="if(event.key==='Enter'){search();}">
+        </div>
+        <div class="header-login">
+            <a href="login.html" class="login-link">Login</a>
+        </div>
+    </header>
+    <div class="blog-layout">
+        <aside class="blog-sidebar">
+            <h2 class="sidebar-title">Categories</h2>
+            <div class="sidebar-search">
+                <input id="search-category" type="text" placeholder="Search..." class="search-input"
+                    aria-label="Search categories" oninput="searchCategory()">
+            </div>
+            <ul class="sidebar-list">
+            </ul>
+        </aside>
+        <main class="blog-main">
+        </main>
+    </div>
+</body>
+
+</html>

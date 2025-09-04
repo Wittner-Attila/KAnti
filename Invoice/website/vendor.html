@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Invoice - New Vendor</title>
+    <link rel="stylesheet" href="inputstyle.css">
+</head>
+
+<body>
+    <a href="index.html" class="back-button">Back to Invoices</a>
+    <h1>Vendor Form</h1>
+    <form class="container" id="vendorForm">
+        <label for="VendorName">
+            <h2>Vendor Name:</h2>
+        </label>
+        <input type="text" id="vendorName" name="vendorName" required><br><br>
+
+        <label for="taxcode">
+            <h2>Tax Code:</h2>
+        </label>
+        <input type="text" id="taxcode" name="taxcode" required pattern="^\d{8}-[1-5]-(0[1-9]|[1-4][0-9]|5[01])$"
+            title="Format: 8 digits, a dash, 1-5, a dash, 01-51 (e.g., 12345678-3-27)"><br><br>
+
+        <label for="address">
+            <h2>Address:</h2>
+        </label>
+        <input type="text" id="address" name="address" required><br><br>
+
+        <button type="submit" id="submitBtn">Submit Vendor</button>
+    </form>
+</body>
+<script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const vendorId = urlParams.get('id');
+    const form = document.getElementById('vendorForm');
+    const submitBtn = document.getElementById('submitBtn');
+
+    if (vendorId) {
+        // Editing existing vendor
+        fetch(`http://localhost:3000/vendors/${vendorId}`)
+            .then(res => res.json())
+            .then(vendor => {
+                document.getElementById('vendorName').value = vendor.name || '';
+                document.getElementById('taxcode').value = vendor.taxcode || '';
+                document.getElementById('address').value = vendor.address || '';
+                submitBtn.textContent = 'Update Vendor';
+            });
+    }
+
+    form.addEventListener('submit', async function (e) {
+        e.preventDefault();
+        const name = document.getElementById('vendorName').value.trim();
+        const taxcode = document.getElementById('taxcode').value.trim();
+        const address = document.getElementById('address').value.trim();
+
+        if (!name || !taxcode || !address) {
+            alert('Please fill in all fields.');
+            return;
+        }
+
+        if (vendorId) {
+            // Update existing vendor
+            try {
+                await fetch(`http://localhost:3000/vendors/${vendorId}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name, taxcode, address })
+                });
+                alert('Vendor updated!');
+                window.location.href = 'index.html';
+            } catch (error) {
+                alert('Error updating Vendor: ' + error.message);
+            }
+        } else {
+            // Create new vendor (original logic)
+            const response = await fetch(`http://localhost:3000/vendors?taxcode=${encodeURIComponent(taxcode)}&name=${encodeURIComponent(name)}`);
+            const existingVendors = await response.json();
+            if (existingVendors.some(vendor =>
+                vendor.taxcode === taxcode ||
+                vendor.name.toLowerCase() === name.toLowerCase()
+            )) {
+                alert('Vendor with this tax code or name already exists.');
+                return;
+            }
+
+            try {
+                await fetch('http://localhost:3000/vendors', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ name, taxcode, address })
+                });
+                alert('Vendor submitted!');
+                window.location.href = 'index.html';
+            } catch (error) {
+                alert('Error submitting Vendor: ' + error.message);
+            }
+        }
+    });
+</script>
+
+</html>

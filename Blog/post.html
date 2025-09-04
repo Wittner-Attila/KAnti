@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styles.css">
+    <title>Blogger - post</title>
+    <script src="post.js"></script>
+</head>
+
+<body>
+    <div class="form-container">
+        <h1 class="form-title">Create a New <span class="blogger-text">Blog</span></h1>
+        <div class="form" id="postForm">
+            <label class="form-label" for="post-title">Title:</label><br>
+            <input type="text" class="form-input post-title" name="post-title" placeholder="Post Title" required>
+            <br>
+            <label class="form-label" for="post-category">Category:</label><br>
+            <input type="text" class="form-input post-category" name="post-category" placeholder="Category (e.g., Tech, Lifestyle)" required>
+            <br>
+            <label class="form-content" for="post-content">Content:</label><br>
+            <textarea class="form-input post-content" placeholder="Your blogs content goes here... (maximum 350 letters)" name="post-content" rows="6" cols="40" maxlength="350" required></textarea>
+            <br>
+            <button class="form-button" onclick="post()">Post</button>
+        </div>
+    </div>
+</body>
+
+</html>

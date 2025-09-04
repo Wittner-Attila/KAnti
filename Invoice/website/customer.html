@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Invoice - New Customer</title>
+    <link rel="stylesheet" href="inputstyle.css">
+</head>
+
+<body>
+    <a href="index.html" class="back-button">Back to Invoices</a>
+    <h1>Customer Form</h1>
+    <form class="container" id="customerForm">
+        <label for="customerName">
+            <h2>Customer Name:</h2>
+        </label>
+        <input type="text" id="customerName" name="customerName" required><br><br>
+
+        <label for="taxcode">
+            <h2>Tax Code:</h2>
+        </label>
+        <input type="text" id="taxcode" name="taxcode" required pattern="^\d{8}-[1-5]-(0[1-9]|[1-4][0-9]|5[01])$"
+            title="Format: 8 digits, a dash, 1-5, a dash, 01-51 (e.g., 12345678-3-27)"><br><br>
+
+        <label for="address">
+            <h2>Address:</h2>
+        </label>
+        <input type="text" id="address" name="address" required><br><br>
+
+        <button type="submit">Submit Customer</button>
+    </form>
+</body>
+<script>
+    // Helper to get query params
+    function getQueryParam(param) {
+        const urlParams = new URLSearchParams(window.location.search);
+        return urlParams.get(param);
+    }
+
+    const customerId = getQueryParam('id');
+    const form = document.getElementById('customerForm');
+    const nameInput = document.getElementById('customerName');
+    const taxcodeInput = document.getElementById('taxcode');
+    const addressInput = document.getElementById('address');
+
+    // If editing, fetch and fill data
+    if (customerId) {
+        fetch(`http://localhost:3000/customers/${customerId}`)
+            .then(res => res.json())
+            .then(customer => {
+                nameInput.value = customer.name || '';
+                taxcodeInput.value = customer.taxcode || '';
+                addressInput.value = customer.address || '';
+            })
+            .catch(() => {
+                alert('Failed to load customer data.');
+                window.location.href = 'index.html';
+            });
+    }
+
+    form.addEventListener('submit', async function (e) {
+        e.preventDefault();
+        const name = nameInput.value.trim();
+        const taxcode = taxcodeInput.value.trim();
+        const address = addressInput.value.trim();
+
+        if (!name || !taxcode || !address) {
+            alert('Please fill in all fields.');
+            return;
+        }
+
+        // If editing, use PUT
+        if (customerId) {
+            try {
+                await fetch(`http://localhost:3000/customers/${customerId}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ name, taxcode, address })
+                });
+                alert('Customer updated!');
+                window.location.href = 'index.html';
+            } catch (error) {
+                alert('Error updating customer: ' + error.message);
+            }
+        } else {
+            // Check for duplicate taxcode
+            const response = await fetch(`http://localhost:3000/customers?taxcode=${encodeURIComponent(taxcode)}`);
+            const existingCustomers = await response.json();
+            if (existingCustomers.length > 0) {
+                alert('Vendor with this tax code already exists.');
+                return;
+            }
+            try {
+                await fetch('http://localhost:3000/customers', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ name, taxcode, address })
+                });
+                alert('Customer submitted!');
+                window.location.href = 'index.html';
+            } catch (error) {
+                alert('Error submitting customer: ' + error.message);
+            }
+        }
+    });
+</script>
+
+</html>

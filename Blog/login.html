@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styles.css">
+    <script src="login.js"></script>
+    <title>Blogger - Login</title>
+</head>
+<body>
+    <div class="form-container">
+        <h1 class="form-title">Login to use <span onclick="window.location.href = 'index.html'"; class="blogger-text">Blogger</span></h1>
+        <div class="form" action="/login" method="POST">
+            <label class="form-label" for="login-username">Username:</label>
+            <input class="form-input" type="text" id="login-username" name="username" placeholder="Enter your username or email" required>
+            <br>
+            <label class="form-label" for="login-password">Password:</label>
+            <input class="form-input" type="password" id="login-password" name="password" placeholder="••••••" required>
+            <br>
+            <button class="form-button" onclick="login()">Login</button>
+        </div>
+        <p class="form-link-text">Not a user yet? <a class="form-link" href="register.html">Register now</a></p>
+        <div id="form-message"></div>
+    </div>
+</body>
+</html>
