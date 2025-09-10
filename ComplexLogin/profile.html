@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <link rel="stylesheet" href="styles.css" />
+        <title>>Website< - profile</title>
+        <script src="profile.js"></script>
+    </head>
+
+    <body>
+        <header class="blog-header">
+            <div class="header-spacer"></div>
+            <h1
+                class="blog-title blogger-text"
+                id="blogger-title"
+                onclick="window.location.href='index.html';"
+            >
+                >Website<
+            </h1>
+            <div class="header-login">
+                <div id="user"></div>
+            </div>
+        </header>
+        <div class="blog-layout">
+            <aside class="blog-sidebar">
+                <button class="delete-button" onclick="deleteProfile()">Delete profile</button>
+                <h2 class="sidebar-title">Change details</h2>
+                <ul class="sidebar-list">
+                    <li>
+                        <label for="profile-email">Email:</label><br /><input
+                            type="text"
+                            name="profile-email"
+                            id="profile-email"
+                        />
+                    </li>
+                    <li>
+                        <label for="profile-name">Username:</label><br /><input
+                            type="text"
+                            name="profile-name"
+                            id="profile-name"
+                        />
+                    </li>
+                    <li>
+                        <label for="profile-password">Password:</label><br /><input
+                            type="text"
+                            name="profile-password"
+                            id="profile-password"
+                        />
+                    </li>
+                </ul>
+                <button onclick="updateProfile()" class="form-button">Save Changes</button>
+                <div id="form-message"></div>
+            </aside>
+        </div>
+    </body>
+</html>
