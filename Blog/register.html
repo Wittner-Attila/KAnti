@@ -1,33 +1,58 @@
 <!DOCTYPE html>
 <html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <link rel="stylesheet" href="styles.css" />
+        <title>Blogger - register</title>
+        <script src="registering.js"></script>
+    </head>
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="styles.css">
-    <title>Blogger - register</title>
-    <script src="registering.js"></script>
-</head>
-
-<body>
-    <div class="form-container">
-        <h1 class="form-title">Register to use <span onclick="window.location.href = 'index.html';" class="blogger-text">Blogger</span></h1>
-        <div class="form" id="registerForm">
-            <label class="form-label" for="register-email">Email:</label>
-            <input class="form-input" type="email" id="register-email" name="email" placeholder="youremail@example.com" required>
-            <br>
-            <label class="form-label" for="register-username">Username:</label>
-            <input class="form-input" type="text" id="register-username" name="username" placeholder="username" required>
-            <br>
-            <label class="form-label" for="register-password">Password:</label>
-            <input class="form-input" type="password" id="register-password" name="password" placeholder="••••••" required>
-            <br>
-            <button class="form-button" onclick="registration()">Register</button>
+    <body>
+        <div class="form-container">
+            <h1 class="form-title">
+                Register to use
+                <span onclick="window.location.href = 'index.html';" class="blogger-text"
+                    >Blogger</span
+                >
+            </h1>
+            <div class="form" id="registerForm">
+                <label class="form-label" for="register-email">Email:</label>
+                <input
+                    class="form-input"
+                    type="email"
+                    id="register-email"
+                    name="email"
+                    placeholder="youremail@example.com"
+                    required
+                />
+                <br />
+                <label class="form-label" for="register-username">Username:</label>
+                <input
+                    class="form-input"
+                    type="text"
+                    id="register-username"
+                    name="username"
+                    placeholder="username"
+                    required
+                />
+                <br />
+                <label class="form-label" for="register-password">Password:</label>
+                <input
+                    class="form-input"
+                    type="password"
+                    id="register-password"
+                    name="password"
+                    placeholder="••••••"
+                    required
+                />
+                <br />
+                <button class="form-button" onclick="registration()">Register</button>
+            </div>
+            <p class="form-link-text">
+                Already have an account? <a class="form-link" href="login.html">Login here</a>
+            </p>
+            <div id="register-message"></div>
         </div>
-        <p class="form-link-text">Already have an account? <a class="form-link" href="login.html">Login
-                here</a></p>
-        <div id="form-message"></div>
-    </div>
-</body>
-
+    </body>
 </html>

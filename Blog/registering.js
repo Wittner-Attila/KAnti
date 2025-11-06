@@ -1,16 +1,22 @@
 let usersData = [];
 
 window.onload = function () {
-    loadInitialData().then(() => {
-        console.log('Initial data loaded:', usersData);
-    }).catch(error => {
-        console.error('Error loading initial data:', error);
-    });
-}
+    loadInitialData()
+        .then(() => {
+            console.log('Initial data loaded:', usersData);
+        })
+        .catch((error) => {
+            console.error('Error loading initial data:', error);
+        });
+};
 
 function loadInitialData() {
     return Promise.all([
-        fetch('http://localhost:5000/users/').then(res => res.json()).then(data => { usersData = data; })
+        fetch('http://localhost:5000/users/')
+            .then((res) => res.json())
+            .then((data) => {
+                usersData = data;
+            }),
     ]);
 }
 
@@ -58,7 +64,7 @@ async function registration() {
         const response = await fetch('http://localhost:5000/users', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ email, username, password })
+            body: JSON.stringify({ email, username, password }),
         });
         if (response.ok) {
             messageDiv.style.color = 'green';
